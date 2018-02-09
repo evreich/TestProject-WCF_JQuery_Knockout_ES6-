@@ -4,58 +4,68 @@ const genreUrl = "/genres";
 const baseUrl = "http://localhost:51808";
 
 function CheckFields(fields) {
-    fields.forEach(function (elem) {
-        if (!(elem))
-            return false;
-    });
-    return true;
+    var result = true;
+    for (let field of fields) {
+        if (!(field)) {
+            result = false;
+            break;
+        }
+    }
+    return result;
 };
 
 function FillSelects(authorsSelect, genresSelect) {
-    FillAuthorsSelect(authorsSelect);
-    FillGenresSelect(genresSelect);
+    return $.when(FillAuthorsSelect(authorsSelect), FillGenresSelect(genresSelect));
 }
 
 function FillAuthorsSelect(authorsSelect) {
     authorsSelect.empty();
-    $.ajax({
-        timeout: 6000,
-        url: "http://localhost:51808/authors",
+
+    var prom = $.ajax({
+        url: baseUrl + authorUrl,
         type: "GET",
-        dataType: "json",
-        success: function (data) {
-            var authors = data.Authors;
-            if (Array.isArray(authors)) {
-                for (var i = 0; i < authors.length; i++) {
-                    authorsSelect.append("<option value=\"" + authors[i].Id + "\">" + authors[i].FirstName + " " + authors[i].LastName + "</option>");
-                };
-            } else {
-                alert("Некорректный ответ от веб-сервиса.");
-            }
-        },
-        error: function () { alert("Ошибка соединения с веб-сервисом."); }
+        dataType: "json"
     });
+    prom.done(function (data) {
+        var authors = data.Authors;
+        if (Array.isArray(authors)) {
+            for (var i = 0; i < authors.length; i++) {
+                authorsSelect.append("<option value=\"" + authors[i].Id + "\">" + authors[i].FirstName + "," + authors[i].LastName + "</option>");
+            };
+        } else {
+            alert("Некорректный ответ от веб-сервиса.");
+        }
+    });
+    prom.fail(function () {
+        alert("Ошибка соединения с веб-сервисом.");
+    });
+
+    return prom;
 }
 
 function FillGenresSelect(genresSelect) {
     genresSelect.empty();
-    $.ajax({
-        timeout: 6000,
-        url: "http://localhost:51808/genres",
+
+    var prom = $.ajax({
+        url: baseUrl + genreUrl,
         type: "GET",
-        dataType: "json",
-        success: function (data) {
-            var genres = data.Genres;
-            if (Array.isArray(genres)) {
-                for (var i = 0; i < genres.length; i++) {
-                    genresSelect.append('<option value="' + genres[i].Id + '">' + genres[i].Title + '</option>');
-                };
-            } else {
-                alert("Некорректный ответ от веб-сервиса.");
-            }
-        },
-        error: function () { alert("Ошибка соединения с веб-сервисом."); }
+        dataType: "json"
     });
+    prom.done(function (data) {
+        var genres = data.Genres;
+        if (Array.isArray(genres)) {
+            for (var i = 0; i < genres.length; i++) {
+                genresSelect.append('<option value="' + genres[i].Id + '">' + genres[i].Title + '</option>');
+            };
+        } else {
+            alert("Некорректный ответ от веб-сервиса.");
+        }
+    });
+    prom.fail(function () {
+        alert("Ошибка соединения с веб-сервисом.");
+    });
+
+    return prom;
 }
 
 function getUrlParameter(name) {

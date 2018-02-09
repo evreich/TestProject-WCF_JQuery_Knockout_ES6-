@@ -23,7 +23,7 @@ namespace TestWCFService.EF
         public DbSet<Book> Books { get; set; }
     }
 
-    class MyContextInitializer : DropCreateDatabaseAlways<DbContext>
+    class MyContextInitializer : DropCreateDatabaseIfModelChanges<DbContext>
     {
         protected override void Seed(DbContext db)
         {

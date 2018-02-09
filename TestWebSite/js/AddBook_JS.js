@@ -1,7 +1,11 @@
 ﻿window.onload = function () {
     var authorsSelect = $("#authorsSelect");
     var genresSelect = $("#genresSelect");
-    FillSelects(authorsSelect, genresSelect);
+
+    FillSelects(authorsSelect, genresSelect)
+        .fail(
+            () => { alert("Ошибка загрузки данных об авторах и жанрах.") }
+        );
 
     SetEventOnAddBtn("#addBookBtn");
 };
@@ -18,11 +22,15 @@ function SetEventOnAddBtn(addBtn) {
 
             prom.done(function () {
                 alert("Книга успешно добавлена!");
+                window.location.href = "http://localhost:52418/html/IndexBooks.html";
             });
 
             prom.fail(function () {
                 alert("Ошибка! Данные не добавились в БД.");
             });
+        }
+        else {
+            alert("Введены некорректные поля формы.")
         }
     });
 }

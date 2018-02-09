@@ -46,7 +46,7 @@ function SetEventOnClickDelLink(delLnk) {
 function FillTableBooks(loadedBooks) {
     for (var i = 0; i < loadedBooks.length; i++) {
         var book = new Book(loadedBooks[i].Id, bookUrl, loadedBooks[i].Title, loadedBooks[i].Author,
-            loadedBooks[i].Genre, moment(loadedBooks[i].DateRealise).toDate().getFullYear());
+            loadedBooks[i].Genre, new Date(loadedBooks[i].DateRealise).getFullYear());
         books.push({
             id: book.id,
             book: book

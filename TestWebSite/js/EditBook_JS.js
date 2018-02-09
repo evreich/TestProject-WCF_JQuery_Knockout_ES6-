@@ -4,10 +4,13 @@ var id;
 window.onload = function () {
     var authorsSelect = $("#authorsSelect");
     var genresSelect = $("#genresSelect");
-    FillSelects(authorsSelect, genresSelect);
-
     var id = getUrlParameter("id");
-    FillBookFields(id);
+
+    FillSelects(authorsSelect, genresSelect)
+        .then(
+        () => { FillBookFields(id); },
+        () => { alert("Ошибка загрузки данных об авторах и жанрах.") }
+        );
 
     SetEventOnClickEditBtn("#editBookBtn");
 };
@@ -18,7 +21,7 @@ function FillBookFields(idBook) {
         type: "GET",
         dataType: "json",
         success: function (data) {
-            book = new Book(idBook, bookUrl, data.Book.Title, data.Book.Author, data.Book.Genre, moment(data.Book.DateRealise).toDate().getFullYear());
+            book = new Book(idBook, bookUrl, data.Book.Title, data.Book.Author, data.Book.Genre, new Date(data.Book.DateRealise).getFullYear());
             book.fillFields("#idBookInput", "#titleBookInput", "#authorsSelect", "#genresSelect", "#dateBookInput");
         },
         error: function () {
@@ -39,17 +42,15 @@ function SetEventOnClickEditBtn(editBtn) {
 
             prom.done(function () {
                 alert("Книга успешно изменена!");
-                setTimeout(function () {
-                    window.location.href = baseUrl + "/html/IndexBooks.html";
-                }, 3000);
+                window.location.href = "http://localhost:52418/html/IndexBooks.html";
             });
 
             prom.fail(function () {
                 alert("Ошибка! Данные не изменились в БД.");
-                setTimeout(function () {
-                    window.location.href = baseUrl + "/html/EditBook.html?id=" + id;
-                }, 3000);
             });
+        }
+        else {
+            alert("Введены некорректные поля формы.")
         }
     });
 }
