@@ -1,5 +1,4 @@
 ﻿var book;
-var id;
 
 window.onload = function () {
     var authorsSelect = $("#authorsSelect");

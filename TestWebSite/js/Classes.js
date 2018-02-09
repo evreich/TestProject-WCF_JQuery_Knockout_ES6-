@@ -85,23 +85,16 @@ Author.prototype.fillFields = function (idField, firstNameField, lastNameField) 
 
 Author.prototype.add = function () {
     var author = this;
-    var result = false;
-    $.ajax({
-        timeout: 6000,
-        url: this.url + "/add",
+    var prom = $.ajax({
+        url: author.url + "/add",
         type: "POST",
         dataType: "json",
-        data: { "Id": this.id, "FirstName": this.firstName, "LastName": this.lastName },
-        contentType: "application/json; charset=utf-8",
-        success: function (res) {
-            sessionStorage.setItem(author.id, JSON.stringify(author));
-            result = true;
-        },
-        error: function () {
-            alert("Ошибка! Данные не добавились в БД.");
-        }
+        data: JSON.stringify({
+            author: { "Id": author.id, "FirstName": author.firstName, "LastName": author.lastName }
+        }),
+        contentType: "application/json; charset=utf-8"
     });
-    return result;
+    return prom;
 };
 
 Author.prototype.edit = function (firstNameValue, lastNameValue) {
@@ -109,24 +102,16 @@ Author.prototype.edit = function (firstNameValue, lastNameValue) {
     this.lastName = lastNameValue;
 
     var author = this;
-    var result = false;
-    $.ajax({
-        timeout: 6000,
-        url: this.url + "/edit",
+    var prom = $.ajax({
+        url: author.url + "/edit",
         type: "PUT",
         dataType: "json",
-        data: { "Id": this.id, "FirstName": this.firstName, "LastName": this.lastName },
-        contentType: "application/json; charset=utf-8",
-        success: function (res) {
-            sessionStorage.removeItem(author.id);
-            sessionStorage.setItem(author.id, JSON.stringify(author));
-            result = true;
-        },
-        error: function () {
-            alert("Ошибка! Данные не сохранились в БД.");
-        }
+        data: JSON.stringify({
+            author: { "Id": author.id, "FirstName": author.firstName, "LastName": author.lastName }
+        }),
+        contentType: "application/json; charset=utf-8"
     });
-    return result;
+    return prom;
 };
 
 function Genre(idObject, partUrl, title) {
@@ -144,45 +129,30 @@ Genre.prototype.fillFields = function (idField, titleField) {
 
 Genre.prototype.add = function () {
     var genre = this;
-    var result = false;
-    $.ajax({
-        timeout: 6000,
-        url: this.url + "/add",
+    var prom = $.ajax({
+        url: genre.url + "/add",
         type: "POST",
         dataType: "json",
-        data: { "Id": this.id, "FirstName": this.firstName, "LastName": this.lastName },
-        contentType: "application/json; charset=utf-8",
-        success: function (res) {
-            sessionStorage.setItem(genre.id, JSON.stringify(genre));
-            result = true;
-        },
-        error: function () {
-            alert("Ошибка! Данные не добавились в БД.");
-        }
+        data: JSON.stringify({
+            genre: { "Id": genre.id, "Title": genre.title }
+        }),
+        contentType: "application/json; charset=utf-8"
     });
-    return result;
+    return prom;
 };
 
 Genre.prototype.edit = function (titleValue) {
     this.title = titleValue;
 
     var genre = this;
-    var result = false;
-    $.ajax({
-        timeout: 6000,
-        url: this.url + "/edit",
+    var prom = $.ajax({
+        url: genre.url + "/edit",
         type: "PUT",
         dataType: "json",
-        data: { "Id": this.id, "Title": this.title },
-        contentType: "application/json; charset=utf-8",
-        success: function (res) {
-            sessionStorage.removeItem(genre.id);
-            sessionStorage.setItem(genre.id, JSON.stringify(genre));
-            result = true;
-        },
-        error: function () {
-            alert("Ошибка! Данные не сохранились в БД.");
-        }
+        data: JSON.stringify({
+            genre: { "Id": genre.id, "Title": genre.title }
+        }),
+        contentType: "application/json; charset=utf-8"
     });
-    return result;
+    return prom;
 };
