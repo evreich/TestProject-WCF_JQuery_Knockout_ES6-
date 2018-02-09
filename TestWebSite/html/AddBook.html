@@ -3,14 +3,27 @@
 <head>
     <meta charset="utf-8" />
     <title>Добавление книги</title>
+    <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.1.min.js"></script>
+    <script type="text/javascript" src="../js/BookPagesHelper_JS.js"></script>
+    <script type="text/javascript" src="../js/AddBook_JS.js"></script>
+    <script type="text/javascript" src="../js/Classes.js"></script>
 </head>
 <body>
     <div>
         <h2>Добавление книги</h2>
         <br/>
         <form method="post">
-
+            <label for="titleBookInput">Название</label><br />
+            <input id="titleBookInput" type="text" /><br />
+            <label for="authorsSelect">Автор</label><br />
+            <select id="authorsSelect"></select><br />
+            <label for="genresSelect">Жанр</label><br />
+            <select id="genresSelect"></select><br />
+            <label for="dateBookInput">Год создания</label><br />
+            <input id="dateBookInput" type="number" min="1800" max="2018" step="1" value="2010" /><br />
+            <input id="addBookBtn" type="button" value="Добавить" />
         </form>
+        <a href="../html/IndexBooks.html">Вернуться</a>
     </div>
 </body>
 </html>

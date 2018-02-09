@@ -18,6 +18,6 @@ namespace TestWCFService.DataContracts
         [DataMember]
         public string Author { get; set; }
         [DataMember]
-        public DateTime DateRealise { get; set; }
+        public string DateRealise { get; set; }
     }
 }

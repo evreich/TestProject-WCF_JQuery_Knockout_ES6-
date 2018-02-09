@@ -1,7 +1,18 @@
-﻿window.onload = function FillSelects() {
-    var authorsSelect = $("#authorsSelect");
+﻿const bookUrl = "/books";
+const authorUrl = "/authors";
+const genreUrl = "/genres";
+const baseUrl = "http://localhost:51808";
+
+function CheckFields(fields) {
+    fields.forEach(function (elem) {
+        if (!(elem))
+            return false;
+    });
+    return true;
+};
+
+function FillSelects(authorsSelect, genresSelect) {
     FillAuthorsSelect(authorsSelect);
-    var genresSelect = $("#genresSelect");
     FillGenresSelect(genresSelect);
 }
 
@@ -15,8 +26,8 @@ function FillAuthorsSelect(authorsSelect) {
         success: function (data) {
             var authors = data.Authors;
             if (Array.isArray(authors)) {
-                for (var i = 0; i < authors.length, i++) {
-                    authorsSelect.append('<option value="' + authors[i].Id + '">' + author[i].FirstName + ' ' + authors[i].LastName + '</option>');
+                for (var i = 0; i < authors.length; i++) {
+                    authorsSelect.append("<option value=\"" + authors[i].Id + "\">" + authors[i].FirstName + " " + authors[i].LastName + "</option>");
                 };
             } else {
                 alert("Некорректный ответ от веб-сервиса.");
@@ -36,7 +47,7 @@ function FillGenresSelect(genresSelect) {
         success: function (data) {
             var genres = data.Genres;
             if (Array.isArray(genres)) {
-                for (var i = 0; i < genres.length, i++) {
+                for (var i = 0; i < genres.length; i++) {
                     genresSelect.append('<option value="' + genres[i].Id + '">' + genres[i].Title + '</option>');
                 };
             } else {
@@ -46,3 +57,10 @@ function FillGenresSelect(genresSelect) {
         error: function () { alert("Ошибка соединения с веб-сервисом."); }
     });
 }
+
+function getUrlParameter(name) {
+    name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+    var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+    var results = regex.exec(location.search);
+    return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+};

@@ -36,7 +36,7 @@ namespace TestWCFService
         [WebInvoke(
             UriTemplate = "/add", 
             Method = "POST",
-            BodyStyle = WebMessageBodyStyle.Bare,
+            BodyStyle = WebMessageBodyStyle.WrappedRequest,
             RequestFormat = WebMessageFormat.Json)
         ]
         void AddBook(BookContract book);
@@ -45,7 +45,7 @@ namespace TestWCFService
         [WebInvoke(
             UriTemplate = "/edit", 
             Method = "PUT",
-            BodyStyle = WebMessageBodyStyle.Bare,
+            BodyStyle = WebMessageBodyStyle.WrappedRequest,
             RequestFormat = WebMessageFormat.Json)
         ]
         void EditBook(BookContract book);

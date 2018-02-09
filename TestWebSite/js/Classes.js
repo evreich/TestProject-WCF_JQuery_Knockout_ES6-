@@ -1,30 +1,20 @@
 ﻿function DBObject(idObject, partUrl) {
     this.id = idObject;
-    this.url = "http://localhost:51808" + partUrl;
+    this.url = baseUrl + partUrl;
 }
 
 DBObject.prototype.fillFields = function (idField) {
     $(idField).val(this.id);
-}
+};
 
 DBObject.prototype.delete = function () {
     var obj = this;
-    $.ajax({
-        timeout: 6000,
-        url: this.url+"/delete",
-        type: "DELETE",
-        dataType: "text",
-        data: this.id.toString(),
-        contentType: "text/plain",
-        success: function (res) {
-            sessionStorage.removeItem(obj.id);
-            alert("Данные успешно удалены!");
-        },
-        error: function () {
-            alert("Ошибка! Данные не удалены из БД.");
-        }
-    })
-}
+    var prom = $.ajax({
+        url: obj.url + "/delete/" + obj.id,
+        type: "DELETE"
+    });
+    return prom;
+};
 
 function Book(idObject, partUrl, title, author, genre, date) {
     DBObject.apply(this, [idObject, partUrl]);
@@ -45,26 +35,19 @@ Book.prototype.fillFields = function (idField, titleField, authorField, genreFie
     $(dateField).val(this.date);
 };
 
-Book.prototype.add = function() {
+Book.prototype.add = function () {
     var book = this;
-    var result = false;
-    $.ajax({
-        timeout: 6000,
-        url: this.url +"/add",
+    var prom = $.ajax({
+        url: book.url + "/add",
         type: "POST",
         dataType: "json",
-        data: { "Id": this.id, "Title": this.title, "Author": this.author, "Genre": this.genre, "DateRealise": this.date },
-        contentType: "application/json; charset=utf-8",
-        success: function (res) {
-            sessionStorage.setItem(book.id, JSON.stringify(book));
-            result = true;
-        },
-        error: function () {
-            alert("Ошибка! Данные не добавились в БД.");
-        }
+        data: JSON.stringify({
+            book: { "Id": book.id, "Title": book.title, "Author": book.author, "Genre": book.genre, "DateRealise": book.date  }
+        }),
+        contentType: "application/json; charset=utf-8"
     });
-    return result;
-}
+    return prom;
+};
 
 Book.prototype.edit = function (titleValue, authorValue, genreValue, dateValue) {
     this.title = titleValue;
@@ -73,24 +56,16 @@ Book.prototype.edit = function (titleValue, authorValue, genreValue, dateValue) 
     this.date = dateValue;
 
     var book = this;
-    var result = false;
-    $.ajax({
-        timeout: 6000,
-        url: this.url + "/edit",
+    var prom = $.ajax({
+        url: book.url + "/edit",
         type: "PUT",
         dataType: "json",
-        data: { "Id": this.id, "Title": this.title, "Author": this.author, "Genre": this.genre, "DateRealise": this.date },
-        contentType: "application/json; charset=utf-8",
-        success: function (res) {
-            sessionStorage.removeItem(book.id);
-            sessionStorage.setItem(book.id, JSON.stringify(book));
-            result = true;
-        },
-        error: function () {
-            alert("Ошибка! Данные не сохранились в БД.");
-        }
-    })
-    return result;
+        data: JSON.stringify({
+            book: { "Id": book.id, "Title": book.title, "Author": book.author, "Genre": book.genre, "DateRealise": book.date }
+        }),
+        contentType: "application/json; charset=utf-8"
+    });
+    return prom;
 };
 
 function Author(idObject, partUrl, firstName, lastName) {
@@ -127,7 +102,7 @@ Author.prototype.add = function () {
         }
     });
     return result;
-}
+};
 
 Author.prototype.edit = function (firstNameValue, lastNameValue) {
     this.firstName = firstNameValue;
@@ -150,7 +125,7 @@ Author.prototype.edit = function (firstNameValue, lastNameValue) {
         error: function () {
             alert("Ошибка! Данные не сохранились в БД.");
         }
-    })
+    });
     return result;
 };
 
@@ -186,7 +161,7 @@ Genre.prototype.add = function () {
         }
     });
     return result;
-}
+};
 
 Genre.prototype.edit = function (titleValue) {
     this.title = titleValue;
@@ -208,6 +183,6 @@ Genre.prototype.edit = function (titleValue) {
         error: function () {
             alert("Ошибка! Данные не сохранились в БД.");
         }
-    })
+    });
     return result;
 };

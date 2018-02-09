@@ -5,6 +5,7 @@ using System.Web;
 using TestWCFService.Models;
 using TestWCFService.EF;
 using TestWCFService.DataContracts;
+using System.Globalization;
 
 namespace TestWCFService.Repositories
 {
@@ -20,16 +21,16 @@ namespace TestWCFService.Repositories
         public List<BookContract> GetBooks()
         {
             List<BookContract> books = new List<BookContract>();
-            _context.Books.ToList().ForEach(x => 
+            _context.Books.ToList().ForEach(x =>
                books.Add(new BookContract
-                    {
-                        Id     = x.Id,
-                        Title  = x.Title,
-                        Author = x.Author.FirstName + ' ' + x.Author.LastName,
-                        Genre  = x.Genre.Title,
-                        DateRealise = x.DateRealise
-                    }
-                )
+               {
+                   Id = x.Id,
+                   Title = x.Title,
+                   Author = x.Author.FirstName + ", " + x.Author.LastName,
+                   Genre = x.Genre.Title,
+                   DateRealise = x.DateRealise.ToShortDateString()
+               }
+             )
             );
 
             return books;
@@ -44,7 +45,7 @@ namespace TestWCFService.Repositories
                 Title = book.Title,
                 Author = book.Author.FirstName + ' ' + book.Author.LastName,
                 Genre = book.Genre.Title,
-                DateRealise = book.DateRealise
+                DateRealise = book.DateRealise.ToShortDateString()
             };
         }
 
@@ -53,10 +54,10 @@ namespace TestWCFService.Repositories
             Book res_book = new Book
             {
                 Title = book.Title,
-                DateRealise = book.DateRealise
+                DateRealise = DateTime.ParseExact(book.DateRealise, "yyyy/dd/MM", CultureInfo.InvariantCulture)
             };
 
-            var authorInfo = book.Author.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+            var authorInfo = book.Author.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
 
             _context.Books.Add(res_book);
             _context.Authors.Single(x => x.FirstName == authorInfo[0] && x.LastName == authorInfo[1]).Books.Add(res_book);
@@ -76,9 +77,9 @@ namespace TestWCFService.Repositories
             var editable_book = _context.Books.Single(x => x.Id == book.Id);
 
             editable_book.Title = book.Title;
-            editable_book.DateRealise = book.DateRealise;
+            editable_book.DateRealise = DateTime.ParseExact(book.DateRealise, "yyyy/dd/MM", CultureInfo.InvariantCulture);
 
-            var authorInfo = book.Author.Split(new string[] { " " }, StringSplitOptions.RemoveEmptyEntries);
+            var authorInfo = book.Author.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
             editable_book.Author = _context.Authors.Single(x => x.FirstName == authorInfo[0] && x.LastName == authorInfo[1]);
             editable_book.Genre = _context.Genres.Single(x => x.Title == book.Title);
             _context.Entry(editable_book).State = System.Data.Entity.EntityState.Modified;
