@@ -16,7 +16,11 @@ namespace TestWCFService.DataContracts
         [DataMember]
         public string Genre { get; set; }
         [DataMember]
+        public int GenreId { get; set; }
+        [DataMember]
         public string Author { get; set; }
+        [DataMember]
+        public int AuthorId { get; set; }
         [DataMember]
         public string DateRealise { get; set; }
     }

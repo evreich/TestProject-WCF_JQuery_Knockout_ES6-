@@ -3,10 +3,6 @@
     this.url = baseUrl + partUrl;
 }
 
-DBObject.prototype.fillFields = function (idField) {
-    $(idField).val(this.id);
-};
-
 DBObject.prototype.delete = function () {
     var obj = this;
     var prom = $.ajax({
@@ -16,24 +12,18 @@ DBObject.prototype.delete = function () {
     return prom;
 };
 
-function Book(idObject, partUrl, title, author, genre, date) {
-    DBObject.apply(this, [idObject, partUrl]);
-    this.title = title;
-    this.author = author;
-    this.genre = genre;
-    this.date = date;
+function Book(idObject, title, authorId, genreId, date, genre = "", author = "") {
+    DBObject.apply(this, [idObject, bookUrl]);
+    this.title = ko.observable(title);
+    this.author = ko.observable(author);
+    this.authorId = authorId;
+    this.genre = ko.observable(genre);
+    this.genreId = genreId;
+    this.date = ko.observable(date);
 }
 
 Book.prototype = Object.create(DBObject.prototype);
 Book.prototype.constructor = Book;
-
-Book.prototype.fillFields = function (idField, titleField, authorField, genreField, dateField) {
-    DBObject.prototype.fillFields.apply(this, [idField]);
-    $(titleField).val(this.title);
-    $(authorField).find("option:contains('" + this.author+"')").attr("selected", "selected");
-    $(genreField).find("option:contains('" + this.genre + "')").attr("selected", "selected");
-    $(dateField).val(this.date);
-};
 
 Book.prototype.add = function () {
     var book = this;
@@ -42,7 +32,7 @@ Book.prototype.add = function () {
         type: "POST",
         dataType: "json",
         data: JSON.stringify({
-            book: { "Id": book.id, "Title": book.title, "Author": book.author, "Genre": book.genre, "DateRealise": book.date  }
+            book: { "Id": book.id, "Title": book.title(), "AuthorId": book.authorId, "GenreId": book.genreId, "DateRealise": book.date().toString() + "/01/01"  }
         }),
         contentType: "application/json; charset=utf-8"
     });
@@ -50,10 +40,10 @@ Book.prototype.add = function () {
 };
 
 Book.prototype.edit = function (titleValue, authorValue, genreValue, dateValue) {
-    this.title = titleValue;
-    this.author = authorValue;
-    this.genre = genreValue;
-    this.date = dateValue;
+    this.title(titleValue);
+    this.authorId = authorValue;
+    this.genreId = genreValue;
+    this.date(dateValue);
 
     var book = this;
     var prom = $.ajax({
@@ -61,27 +51,21 @@ Book.prototype.edit = function (titleValue, authorValue, genreValue, dateValue) 
         type: "PUT",
         dataType: "json",
         data: JSON.stringify({
-            book: { "Id": book.id, "Title": book.title, "Author": book.author, "Genre": book.genre, "DateRealise": book.date }
+            book: { "Id": book.id, "Title": book.title(), "AuthorId": book.authorId, "GenreId": book.genreId, "DateRealise": book.date().toString() + "/01/01" }
         }),
         contentType: "application/json; charset=utf-8"
     });
     return prom;
 };
 
-function Author(idObject, partUrl, firstName, lastName) {
-    DBObject.apply(this, [idObject, partUrl]);
+function Author(idObject, firstName, lastName) {
+    DBObject.apply(this, [idObject, authorUrl]);
     this.firstName = firstName;
     this.lastName = lastName;
 }
 
 Author.prototype = Object.create(DBObject.prototype);
 Author.prototype.constructor = Author;
-
-Author.prototype.fillFields = function (idField, firstNameField, lastNameField) {
-    DBObject.prototype.fillFields.apply(this, [idField]);
-    $(firstNameField).val(this.firstName);
-    $(lastNameField).val(this.lastName);
-};
 
 Author.prototype.add = function () {
     var author = this;
@@ -114,18 +98,13 @@ Author.prototype.edit = function (firstNameValue, lastNameValue) {
     return prom;
 };
 
-function Genre(idObject, partUrl, title) {
-    DBObject.apply(this, [idObject, partUrl]);
+function Genre(idObject, title) {
+    DBObject.apply(this, [idObject, genreUrl]);
     this.title = title;
 }
 
 Genre.prototype = Object.create(DBObject.prototype);
 Genre.prototype.constructor = Genre;
-
-Genre.prototype.fillFields = function (idField, titleField) {
-    DBObject.prototype.fillFields.apply(this, [idField]);
-    $(titleField).val(this.title);
-};
 
 Genre.prototype.add = function () {
     var genre = this;

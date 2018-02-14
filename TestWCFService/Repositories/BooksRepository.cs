@@ -26,8 +26,10 @@ namespace TestWCFService.Repositories
                {
                    Id = x.Id,
                    Title = x.Title,
-                   Author = x.Author.FirstName + "," + x.Author.LastName,
+                   Author = x.Author.FirstName + " " + x.Author.LastName,
+                   AuthorId = (int)x.AuthorId,
                    Genre = x.Genre.Title,
+                   GenreId = (int)x.GenreId,
                    DateRealise = x.DateRealise.ToShortDateString()
                }
              )
@@ -43,8 +45,10 @@ namespace TestWCFService.Repositories
             {
                 Id = book.Id,
                 Title = book.Title,
-                Author = book.Author.FirstName + "," + book.Author.LastName,
+                Author = book.Author.FirstName + " " + book.Author.LastName,
+                AuthorId = (int)book.AuthorId,
                 Genre = book.Genre.Title,
+                GenreId = (int)book.GenreId,
                 DateRealise = book.DateRealise.ToShortDateString()
             };
         }
@@ -57,12 +61,9 @@ namespace TestWCFService.Repositories
                 DateRealise = DateTime.ParseExact(book.DateRealise, "yyyy/dd/MM", CultureInfo.InvariantCulture)
             };
 
-            var authorInfo = book.Author.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
-            var authorFirstName = authorInfo[0];
-            var authorLastName = authorInfo[1];
             _context.Books.Add(res_book);
-            _context.Authors.Single(x => x.FirstName == authorFirstName && x.LastName == authorLastName).Books.Add(res_book);
-            _context.Genres.Single(x => x.Title == book.Genre).Books.Add(res_book);
+            _context.Authors.Single(x => x.Id == book.AuthorId).Books.Add(res_book);
+            _context.Genres.Single(x => x.Id == book.GenreId).Books.Add(res_book);
             _context.SaveChanges(); 
         }
 
@@ -80,11 +81,8 @@ namespace TestWCFService.Repositories
             editable_book.Title = book.Title;
             editable_book.DateRealise = DateTime.ParseExact(book.DateRealise, "yyyy/dd/MM", CultureInfo.InvariantCulture);
 
-            var authorInfo = book.Author.Split(new string[] { "," }, StringSplitOptions.RemoveEmptyEntries);
-            var authorFirstName = authorInfo[0];
-            var authorLastName = authorInfo[1];
-            editable_book.Author = _context.Authors.Single(x => x.FirstName == authorFirstName && x.LastName == authorLastName);
-            editable_book.Genre = _context.Genres.Single(x => x.Title == book.Genre);
+            editable_book.Author = _context.Authors.Single(x => x.Id == book.AuthorId);
+            editable_book.Genre = _context.Genres.Single(x => x.Id == book.GenreId);
             _context.Entry(editable_book).State = System.Data.Entity.EntityState.Modified;
             _context.SaveChanges();
         }

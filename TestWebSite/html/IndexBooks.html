@@ -5,12 +5,13 @@
     <title>Список книг</title>
     <link rel="stylesheet" type="text/css" href="../css/Index_CSS.css">
     <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.1.min.js"></script>
+    <script type="text/javascript" src="../Scripts/knockout-3.4.2.js"></script>
     <script type="text/javascript" src="../js/PagesHelper_JS.js"></script>
     <script type="text/javascript" src="../js/IndexBooksPage_JS.js"></script>
     <script type="text/javascript" src="../js/Classes.js"></script>
 </head>
 <body>
-    <label id="lbMessage"></label>
+    <label id="lbMessage" data-bind="visible: downloadMessage, text: downloadMessage"></label>
     <h2>Таблица книг</h2>
     <div>
         <table id="tableBooks">
@@ -24,14 +25,103 @@
                     <td></td>
                 </tr>
             </thead>
-            <tbody></tbody>
+            <tbody data-bind="foreach: books">
+                <tr>
+                    <td><span data-bind="text: title"></span></td>
+                    <td><span data-bind="text: author"></span></td>
+                    <td><span data-bind="text: genre"></span></td>
+                    <td><span data-bind="text: date"></span></td>
+                    <td>
+                        <input data-bind="value: id" type="hidden">
+                        <a id="showModalEditBook" href="#" onclick="return false;" data-bind="click: $parent.editBook" class="editLnk">Изменить</a>
+                    </td>
+                    <td> 
+                        <input data-bind="value: id" type="hidden">
+                        <a data-bind="click: $parent.deleteBook" href="#" onclick="return false;" class="deleteLnk">Удалить</a>
+                    </td>
+                </tr>
+            </tbody>
         </table>
     </div>
-    <a href="../html/AddBook.html">Создание книги</a>
 
-    <div>
+    <button id="showModalAddBook">Создание книги</button>
+    <h3>Перейти на другую страницу</h3>
+    <div id="nav-bar">
         <a href="../html/IndexAuthors.html">Список авторов</a>
         <a href="../html/IndexGenres.html">Список жанров</a>
+    </div>
+
+    <div id="addBookModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close">&times;</span>
+                <h2>Добавление книги</h2>
+            </div>
+            <div class="modal-body">
+                <form method="post">
+                    <label for="titleBookInput">Название</label><br />
+                    <input id="titleBookInput" type="text" data-bind="value: bookVM.title" /><br />
+                    <label for="authorsSelect">Автор</label><br />
+                    <select id="authorsSelect" data-bind="
+                       options: bookVM.allAuthors,
+                       optionsText: function(item) {
+                            return item.firstName + ' ' + item.lastName;},
+                       optionsValue: 'id',
+                       value: bookVM.authorId">
+                    </select><br />
+                    <label for="genresSelect">Жанр</label><br />
+                    <select id="genresSelect" data-bind="
+                       options: bookVM.allGenres,
+                       optionsText: 'title',
+                       optionsValue: 'id',
+                       value: bookVM.genreId">
+                    </select><br />
+                    <label for="dateBookInput">Год создания</label><br />
+                    <input id="dateBookInput" type="number" min="1800" max="2018" step="1" data-bind="value: bookVM.date" /><br />
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button id="addBookBtn" data-bind="click: bookVM.addBook">Добавить</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="editBookModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close">&times;</span>
+                <h2>Изменение книги</h2>
+            </div>
+            <div class="modal-body">
+                <form method="post">
+                    <input id="idBookInput" data-bind="value: bookVM.id" type="hidden" /><br />
+                    <label for="titleBookInput">Название</label><br />
+                    <input id="titleBookInput" type="text" data-bind="value: bookVM.title" /><br />
+                    <label for="authorsSelect">Автор</label><br />
+                    <select id="authorsSelect" data-bind="
+                       options: bookVM.allAuthors,
+                       optionsText: function(item) {
+                            return item.firstName +' ' + item.lastName;},
+                       optionsValue: 'id',
+                       value: bookVM.authorId">
+                    </select><br />
+                    <label for="genresSelect">Жанр</label><br />
+                    <select id="genresSelect" data-bind="
+                       options: bookVM.allGenres,
+                       optionsText: 'title',
+                       optionsValue: 'id',
+                       value: bookVM.genreId">
+                    </select><br />
+                    <label for="dateBookInput">Год создания</label><br />
+                    <input id="dateBookInput" data-bind="value: bookVM.date" type="number" min="1800" max="2018" step="1" /><br />
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button id="editBookBtn" data-bind="click: bookVM.editBook">Изменить</button>
+            </div>
+        </div>
     </div>
 </body>
 </html>

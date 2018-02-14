@@ -14,55 +14,26 @@ function CheckFields(fields) {
     return result;
 };
 
-function FillSelects(authorsSelect, genresSelect) {
-    return $.when(FillAuthorsSelect(authorsSelect), FillGenresSelect(genresSelect));
+function GetDataForBookSelects() {
+    return $.when(GetAuthors(), GetGenres());
 }
 
-function FillAuthorsSelect(authorsSelect) {
-    authorsSelect.empty();
+function GetAuthors() {
 
     var prom = $.ajax({
         url: baseUrl + authorUrl,
         type: "GET",
         dataType: "json"
     });
-    prom.done(function (data) {
-        var authors = data.Authors;
-        if (Array.isArray(authors)) {
-            for (var i = 0; i < authors.length; i++) {
-                authorsSelect.append("<option value=\"" + authors[i].Id + "\">" + authors[i].FirstName + "," + authors[i].LastName + "</option>");
-            };
-        } else {
-            alert("Некорректный ответ от веб-сервиса.");
-        }
-    });
-    prom.fail(function () {
-        alert("Ошибка соединения с веб-сервисом.");
-    });
 
     return prom;
 }
 
-function FillGenresSelect(genresSelect) {
-    genresSelect.empty();
-
+function GetGenres() {
     var prom = $.ajax({
         url: baseUrl + genreUrl,
         type: "GET",
         dataType: "json"
-    });
-    prom.done(function (data) {
-        var genres = data.Genres;
-        if (Array.isArray(genres)) {
-            for (var i = 0; i < genres.length; i++) {
-                genresSelect.append('<option value="' + genres[i].Id + '">' + genres[i].Title + '</option>');
-            };
-        } else {
-            alert("Некорректный ответ от веб-сервиса.");
-        }
-    });
-    prom.fail(function () {
-        alert("Ошибка соединения с веб-сервисом.");
     });
 
     return prom;
