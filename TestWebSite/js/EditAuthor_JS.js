@@ -39,7 +39,7 @@ function SetEventOnClickEditBtn(editBtn) {
             });
         }
         else {
-            alert("Введены некорректные поля формы.")
+            alert("Введены некорректные поля формы.");
         }
     });
 }

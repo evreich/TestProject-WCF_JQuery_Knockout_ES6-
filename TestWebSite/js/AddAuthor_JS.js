@@ -21,7 +21,7 @@ function SetEventOnAddBtn(addBtn) {
             });
         }
         else {
-            alert("Введены некорректные поля формы.")
+            alert("Введены некорректные поля формы.");
         }
     });
 }

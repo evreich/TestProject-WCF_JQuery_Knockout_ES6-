@@ -14,7 +14,7 @@ body {
 
 button{
     font-size: 16px;
-    margin: 10px 0px;
+    margin: 10px 0;
 }
 
 input{
@@ -36,7 +36,7 @@ tr:last-child > td {
     padding-bottom: 10px;
 }
 
-button#addBookBtn, button#editBookBtn {
+#addBookBtn, #editBookBtn {
     float: right;
 }
 
@@ -64,6 +64,8 @@ button#addBookBtn, button#editBookBtn {
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
     -webkit-animation-name: animatetop;
     -webkit-animation-duration: 0.4s;
+    -moz-animation-name: animation;
+    -moz-animation-duration: 0.4s;
     animation-name: animatetop;
     animation-duration: 0.4s
 }
@@ -121,5 +123,27 @@ button#addBookBtn, button#editBookBtn {
 }
 
 .modal-body label, .modal-body input, .modal-body select {
-    margin: 5px 0px;
+    margin: 5px 0;
+}
+
+table.paginator {
+    border-collapse: separate;
+    border-spacing: 0px;
+}
+
+table.paginator td {
+    padding: 5px;
+    border-right: 0;
+}
+
+table.paginator td:first-child {
+    border-top-left-radius: 7px;
+    border-bottom-left-radius: 7px;
+    
+}
+
+table.paginator td:last-child {
+    border-top-right-radius: 7px;
+    border-bottom-right-radius: 7px;
+    border-right: 2px solid black;
 }

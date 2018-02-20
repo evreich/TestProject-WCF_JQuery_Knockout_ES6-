@@ -6,13 +6,13 @@ const baseUrl = "http://localhost:51808";
 function CheckFields(fields) {
     var result = true;
     for (let field of fields) {
-        if (!(field)) {
+        if (!field) {
             result = false;
             break;
         }
     }
     return result;
-};
+}
 
 function GetDataForBookSelects() {
     return $.when(GetAuthors(), GetGenres());
@@ -44,4 +44,4 @@ function getUrlParameter(name) {
     var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
     var results = regex.exec(location.search);
     return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
-};
+}

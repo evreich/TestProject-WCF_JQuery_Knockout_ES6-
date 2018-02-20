@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using TestWCFService.Models;
 using TestWCFService.EF;
 using TestWCFService.DataContracts;
@@ -16,9 +15,18 @@ namespace TestWCFService.Repositories
         public BooksRepository()
         {
             _context = new DbContext();
+            _context.Books.OrderBy(x => x.Title);
+            _context.Authors.OrderBy(x => x.FirstName).ThenBy(x => x.LastName);
+            _context.Genres.OrderBy(x => x.Title);
+            _context.SaveChanges();
         }
 
-        public List<BookContract> GetBooks()
+        public int GetCountBooks()
+        {
+            return _context.Books.Count();
+        }
+
+        public List<BookContract> GetAllBooks()
         {
             List<BookContract> books = new List<BookContract>();
             _context.Books.ToList().ForEach(x =>
@@ -31,8 +39,31 @@ namespace TestWCFService.Repositories
                    Genre = x.Genre.Title,
                    GenreId = (int)x.GenreId,
                    DateRealise = x.DateRealise.ToShortDateString()
-               }
-             )
+               })
+            );
+
+            return books;
+        }
+
+        public List<BookContract> GetBooks(int page, int countItemOnPage)
+        {
+            if (GetCountBooks() < (page - 1) * countItemOnPage)
+                throw new ArgumentException("Для данной страницы данные выдать невозможно. Отправлены некорректные параметры.");
+         
+            var booksOnCurrPage = _context.Books.OrderBy(x => x.Title).Skip(countItemOnPage * (page - 1)).Take(countItemOnPage).ToList();
+
+            List<BookContract> books = new List<BookContract>();
+            booksOnCurrPage.ForEach(x =>
+               books.Add(new BookContract
+               {
+                   Id = x.Id,
+                   Title = x.Title,
+                   Author = x.Author.FirstName + " " + x.Author.LastName,
+                   AuthorId = (int)x.AuthorId,
+                   Genre = x.Genre.Title,
+                   GenreId = (int)x.GenreId,
+                   DateRealise = x.DateRealise.ToShortDateString()
+               })
             );
 
             return books;

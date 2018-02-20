@@ -14,13 +14,33 @@ namespace TestWCFService
     {
         [OperationContract]
         [WebInvoke(
+            UriTemplate = "/count",
+            Method = "GET",
+            BodyStyle = WebMessageBodyStyle.WrappedResponse,
+            ResponseFormat = WebMessageFormat.Json)
+        ]
+        [return: MessageParameter(Name = "Count")]
+        int GetCountBooks();
+
+        [OperationContract]
+        [WebInvoke(
+            UriTemplate = "/{page}/{countItemOnPage}",
+            Method = "GET",
+            BodyStyle = WebMessageBodyStyle.WrappedResponse,
+            ResponseFormat = WebMessageFormat.Json)
+        ]
+        [return: MessageParameter(Name = "Books")]
+        List<BookContract> GetBooks(string page, string countItemOnPage);
+
+        [OperationContract]
+        [WebInvoke(
             UriTemplate = "/", 
             Method = "GET",
             BodyStyle = WebMessageBodyStyle.WrappedResponse,
             ResponseFormat = WebMessageFormat.Json)
         ]
         [return: MessageParameter(Name = "Books")]
-        List<BookContract> GetBooks();
+        List<BookContract> GetAllBooks();
 
         [OperationContract]
         [WebInvoke(

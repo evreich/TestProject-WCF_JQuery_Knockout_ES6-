@@ -43,10 +43,21 @@ namespace TestWCFService
             return _repository.GetBook(int.Parse(id));
         }
 
-        public List<BookContract> GetBooks()
+        public List<BookContract> GetBooks(string page, string countItemOnPage)
         {
             //TODO: Error handling
-            return _repository.GetBooks();
+            return _repository.GetBooks(int.Parse(page), int.Parse(countItemOnPage));
+        }
+
+        public List<BookContract> GetAllBooks()
+        {
+            //TODO: Error handling
+            return _repository.GetAllBooks();
+        }
+
+        public int GetCountBooks()
+        {
+            return _repository.GetCountBooks();
         }
     }
 }
