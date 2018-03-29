@@ -12,7 +12,7 @@ function FillAuthorFields(idAuthor) {
         type: "GET",
         dataType: "json",
         success: function (data) {
-            author = new Author(idAuthor, authorUrl, data.Author.FirstName, data.Author.LastName);
+            author = new Author(idAuthor, data.Author.FirstName, data.Author.LastName);
             author.fillFields("#idAuthorInput", "#firstNameInput", "#lastNameInput");
         },
         error: function () {

@@ -1,8 +1,8 @@
-﻿var addModalWindow, editModalWindow;
-var booksVM;
+﻿var addModalWindow = $("#addBookModal");
+var editModalWindow = $("#editBookModal");
 
 function BooksViewModel() {
-    var self = this;
+    let self = this;
 
     self.countItemsOnPage = ko.observable(10);
 
@@ -10,29 +10,25 @@ function BooksViewModel() {
     self.items = ko.observableArray([]);
 
     self.deleteBook = function () {
-        var bookId = $(event.target).prev("input").val();
-        var currBook = self.items().filter(function (book) {
-            return book.id == bookId;
-        })[0];
+        let bookId = $(event.target).prev("input").val();
+        let currBook = self.items().filter(
+            book => book.id == bookId)[0];
             
-        var prom = currBook.delete();        
-        prom.done(function () {
+        let prom = currBook.delete();        
+        prom.done(() => {
             self.allItems.remove(currBook);
             alert("Книга успешно удалена!");
         });
 
-        prom.fail(function () {
-            alert("Ошибка! Удаление не удалось.");
-        });
-    };
+        prom.fail(() => alert("Ошибка! Удаление не удалось."));
+        };
 
     self.bookVM = new ActionBookViewModel(self);
 
     self.editBook = function () {
-        var bookId = $(event.target).prev("input").val();
-        var editableBook = self.items().filter(function (book) {
-            return book.id == bookId;
-        })[0];
+        let bookId = $(event.target).prev("input").val();
+        let editableBook = self.items().filter(
+            book => book.id == bookId)[0];
 
         self.bookVM.id(editableBook.id);
         self.bookVM.title(editableBook.title());
@@ -45,7 +41,7 @@ function BooksViewModel() {
 }
 
 function ActionBookViewModel(booksVM) {
-    var self = this;
+    let self = this;
     self.id = ko.observable();
     self.title = ko.observable();
     self.authorId = ko.observable();
@@ -59,89 +55,70 @@ function ActionBookViewModel(booksVM) {
     
     self.addBook = function () {
         if (CheckFields([self.title(), self.authorId(), self.genreId(), self.date()])) {
-            var newBook = new Book(0, self.title(), self.authorId(), self.genreId(), self.date());
-            var prom = newBook.add();
+            let newBook = new Book(0, self.title(), self.authorId(), self.genreId(), self.date());
+            let prom = newBook.add();
 
-            prom.done(function () {
-                var currAuthor = self.allAuthors().filter(function (author) {
-                    return author.id == newBook.authorId;
-                })[0];
-                newBook.author(currAuthor.firstName + ' ' + currAuthor.lastName);
+            prom.done(() => {
+                let currAuthor = self.allAuthors().filter(
+                    author => author.id == newBook.authorId)[0];
+                newBook.author(`${currAuthor.firstName} ${currAuthor.lastName}`);
 
-                var currGenre = self.allGenres().filter(function (genre) {
-                    return genre.id == newBook.genreId;
-                })[0];
+                let currGenre = self.allGenres().filter(
+                    genre => genre.id == newBook.genreId)[0];
                 newBook.genre(currGenre.title);
                 
                 booksVM.allItems.push(newBook);
                 alert("Книга успешно добавлена!");
                 $("#addBookModal .close").click();
-                self.clear();
             });
 
-            prom.fail(function () {
-                alert("Ошибка! Данные не добавились в БД.");
-            });
+            prom.fail(() => alert("Ошибка! Данные не добавились в БД."));
+            
         }
         else {
             alert("Введены некорректные поля формы.")
         }
     }
-
+     
     self.editBook = function (editableBook) {
         if (CheckFields([self.title(), self.authorId(), self.genreId(), self.date()])) {
-            var editableBook = booksVM.items().filter(function (book) {
-                return book.id == self.id();
-            })[0];
-            var prom = editableBook.edit(self.title(), self.authorId(), self.genreId(), self.date());
+            let editableBook = booksVM.items().filter(
+                book => book.id == self.id())[0];
+            let prom = editableBook.edit(self.title(), self.authorId(), self.genreId(), self.date());
 
-            prom.done(function () {
+            prom.done( ()=> {
 
-                var currAuthor = self.allAuthors().filter(function (author) {
-                    return author.id == self.authorId();
-                })[0];
-                editableBook.author(currAuthor.firstName + ' ' + currAuthor.lastName);
+                let currAuthor = self.allAuthors().filter(
+                    author => author.id == self.authorId())[0];
+                editableBook.author(`${currAuthor.firstName} ${currAuthor.lastName}`);
 
-                var currGenre = self.allGenres().filter(function (genre) {
-                    return genre.id == self.genreId();
-                })[0];
+                let currGenre = self.allGenres().filter(
+                    genre => genre.id == self.genreId())[0];
                 editableBook.genre(currGenre.title);
                 booksVM.items.valueHasMutated();
  
                 alert("Книга успешно изменена!");
                 $("#editBookModal .close").click();
-                self.clear();
             });
 
-            prom.fail(function () {
-                alert("Ошибка! Данные не добавились в БД.");
-            });
+            prom.fail(() => alert("Ошибка! Данные не добавились в БД."));
         }
         else {
             alert("Введены некорректные поля формы.")
         }
-    }
-
-    self.clear = function () {
-        self.title("");
-        self.date(2010);
-        self.authorId(0);
-        self.genreId(0);
     }
 }
 
 function InitSelects(bookVM) {
     GetDataForBookSelects().done(function (authors, genres) {
         if (Array.isArray(authors[0].Authors) && Array.isArray(genres[0].Genres)) {
-            var loadedAuthors = $.map(authors[0].Authors, function (author) {
-                return new Author(author.Id, author.FirstName, author.LastName);
-            });
+            let loadedAuthors = $.map(authors[0].Authors, author =>
+                new Author(author.Id, author.FirstName, author.LastName));
             loadedAuthors.unshift(new Author(0, "Выберите автора", ""));
             bookVM.allAuthors(loadedAuthors);
 
-            var loadedGenres = $.map(genres[0].Genres, function (genre) {
-                return new Genre(genre.Id, genre.Title);
-            });
+            let loadedGenres = $.map(genres[0].Genres, genre =>
+                new Genre(genre.Id, genre.Title));
             loadedGenres.unshift(new Genre(0, "Выберите жанр"));
             bookVM.allGenres(loadedGenres);         
         }
@@ -156,14 +133,14 @@ function InitSelects(bookVM) {
 ko.bindingHandlers.pager = {
     init: function (element, valueAccessor, allBindings) {
         //init pager
-        var items = valueAccessor().items;
-        var allItems = ko.utils.unwrapObservable(valueAccessor().allItems);
+        let items = valueAccessor().items;
+        let allItems = ko.utils.unwrapObservable(valueAccessor().allItems);
 
-        var countItemOnPage = ko.utils.unwrapObservable(valueAccessor().countItemsOnPage);
-        var countPages = (allItems.length % countItemOnPage) == 0 ?
+        let countItemOnPage = ko.utils.unwrapObservable(valueAccessor().countItemsOnPage);
+        let countPages = (allItems.length % countItemOnPage) == 0 ?
                         parseInt(allItems.length / countItemOnPage) :
                         parseInt(allItems.length / countItemOnPage)  + 1;
-        var funcOnClickPage = function (event) {
+        let funcOnClickPage = function (event) {
             $("#currPage").val(parseInt(event.currentTarget.text));
             items.removeAll();
         };
@@ -173,22 +150,22 @@ ko.bindingHandlers.pager = {
         items(allItems.slice(0, countItemOnPage));
     },
     update: function (element, valueAccessor, allBindings) {
-        var items = valueAccessor().items;
-        var allItems = ko.utils.unwrapObservable(valueAccessor().allItems);
-        var currPage = parseInt($("#currPage").val());
-        var countItemOnPage = parseInt(ko.utils.unwrapObservable(valueAccessor().countItemsOnPage));
+        let items = valueAccessor().items;
+        let allItems = ko.utils.unwrapObservable(valueAccessor().allItems);
+        let currPage = parseInt($("#currPage").val());
+        let countItemOnPage = parseInt(ko.utils.unwrapObservable(valueAccessor().countItemsOnPage));
         //if change currPage
         if (items().length == 0) {
-            var startIndex = (currPage - 1) * countItemOnPage;
-            var endIndex = currPage * countItemOnPage
+            let startIndex = (currPage - 1) * countItemOnPage;
+            let endIndex = currPage * countItemOnPage
             items(allItems.slice(startIndex, endIndex));
         }
         //if change countItemsOnPage or allBooks
         else {
-            var countPages = (allItems.length % countItemOnPage) == 0 ?
+            let countPages = (allItems.length % countItemOnPage) == 0 ?
                 parseInt(allItems.length / countItemOnPage) :
                 parseInt(allItems.length / countItemOnPage) + 1;
-            var funcOnClickPage = function (event) {
+            let funcOnClickPage = function (event) {
                 $("#currPage").val(parseInt(event.currentTarget.text));
                 items.removeAll();
             };
@@ -201,13 +178,13 @@ ko.bindingHandlers.pager = {
 function ReloadPages(table, countPages, clickFunc, items) {
     $(table).empty();
     $(table).append("<tbody></tbody>");
-    var tbodyRow = document.createElement("tr");
-    for (var i = 1; i <= countPages; i++) {
-        var a = document.createElement("a");
+    let tbodyRow = document.createElement("tr");
+    for (let i = 1; i <= countPages; i++) {
+        let a = document.createElement("a");
         a.setAttribute("href", "#");
         a.innerText = i;
         a.onclick = clickFunc;
-        var td = document.createElement("td");
+        let td = document.createElement("td");
         td.appendChild(a);
         tbodyRow.appendChild(td);
     }
@@ -217,26 +194,31 @@ function ReloadPages(table, countPages, clickFunc, items) {
 window.onload = function () {
     CreateVM();
 
-    SetEventOnBtnClick();
-    SetEventOnCloseBtnClick();
-
-    addModalWindow = $("#addBookModal");
-    editModalWindow = $("#editBookModal");
+    SetEventOnAddBtnClick(addModalWindow);
+    SetEventOnCloseBtnClick(addModalWindow, editModalWindow);
 }
 
+window.onclick = function (event) {
+    if (event.target == addModalWindow[0]) {
+        $("span.close", addModalWindow).click();
+    }
+    if (event.target == editModalWindow[0]) {
+        $("span.close", editModalWindow).click();
+    }
+}  
+
 function CreateVM() {
-    var prom = $.ajax({
+    let prom = $.ajax({
         url: baseUrl + bookUrl,
         type: "GET",
         dataType: "json"
     });
-    prom.done(function (data) {
+    prom.done(data => {
         if (Array.isArray(data.Books)) {
-            loadedBooks = $.map(data.Books, function (book) {
-                return new Book(book.Id, book.Title, book.AuthorId,
-                    book.GenreId, new Date(book.DateRealise).getFullYear(), book.Genre, book.Author);
-            });
-            loadedBooks.sort(function (a, b) {
+            loadedBooks = $.map(data.Books,
+                book => new Book(book.Id, book.Title, book.AuthorId,
+                    book.GenreId, new Date(book.DateRealise).getFullYear(), book.Genre, book.Author));
+            loadedBooks.sort((a, b) => {
                 if (a.title() < b.title())
                     return -1;
                 if (a.title() > b.title())
@@ -244,39 +226,33 @@ function CreateVM() {
                 return 0;
             });
             //create VM
-            booksVM = new BooksViewModel();
+            let booksVM = new BooksViewModel();
             booksVM.allItems(loadedBooks);
             ko.applyBindings(booksVM);
         } else {
             alert("Некорректный ответ от веб-сервиса при получении данных о доступных книгах.");
         }
     });
-    prom.fail(function () { alert("Ошибка при получении данных о книгах. Нет соединения с веб-сервисом."); });
+    prom.fail(() => alert("Ошибка при получении данных о книгах. Нет соединения с веб-сервисом."));
 }
 
-function SetEventOnBtnClick() {
-    $("#showModalAddBook").click(function () {
+function SetEventOnAddBtnClick(addModalWindow) {
+    $("#showModalAddBook").click(() => {
+        $("#addBookModal #titleBookInput").val("");
+        $("#addBookModal #dateBookInput").val(2010);
+        $("#addBookModal #genresSelect").val(0);
+        $("#addBookModal #authorsSelect").val(0);
+
         addModalWindow.show();
     });
 }
 
-function SetEventOnCloseBtnClick() {
-    $("#addBookModal span.close").click(function () {
+function SetEventOnCloseBtnClick(addModalWindow, editModalWindow) {
+    $("span.close", addModalWindow).click (() => {
         addModalWindow.hide();
-        booksVM.bookVM.clear();
     });
-    $("#editBookModal span.close").click(function () {
+    $("span.close", editModalWindow).click(() => {
         editModalWindow.hide();
-        booksVM.bookVM.clear();
     });
-}
-
-window.onclick = function (event) {
-    if (event.target == addModalWindow[0]) {
-        $("#addBookModal span.close").click();
-    }
-    if (event.target == editModalWindow[0]) {
-        $("#editBookModal span.close").click();
-    }
 }
 

@@ -4,11 +4,6 @@
     <meta charset="utf-8" />
     <title>Список книг</title>
     <link rel="stylesheet" type="text/css" href="../css/Index_CSS.css">
-    <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.1.min.js"></script>
-    <script type="text/javascript" src="../Scripts/knockout-3.4.2.js"></script>
-    <script type="text/javascript" src="../js/PagesHelper_JS.js"></script>
-    <script type="text/javascript" src="../js/IndexBooksPage_JS.js"></script>
-    <script type="text/javascript" src="../js/Classes.js"></script>
 </head>
 <body>
     <h2>Таблица книг</h2>
@@ -34,7 +29,7 @@
                         <input data-bind="value: id" type="hidden">
                         <a id="showModalEditBook" href="#" onclick="return false;" data-bind="click: $parent.editBook" class="editLnk">Изменить</a>
                     </td>
-                    <td> 
+                    <td>
                         <input data-bind="value: id" type="hidden">
                         <a data-bind="click: $parent.deleteBook" href="#" onclick="return false;" class="deleteLnk">Удалить</a>
                     </td>
@@ -45,13 +40,12 @@
 
     <div>
         <label id="lbCountItemsOnPage" for="inputCountItemsOnPage">Кол-во элементов на странице:</label>
-        <input id="inputCountItemsOnPage" type="number" data-bind="value: countItemsOnPage" min="5" max="20" step="1" /> 
+        <input id="inputCountItemsOnPage" type="number" data-bind="value: countItemsOnPage" min="5" max="20" step="1" />
     </div>
     <br />
     <div>
         <input type="hidden" id="currPage" value="1" />
-        <table class="paginator" data-bind="pager: {items, countItemsOnPage, allItems} ">
-        </table>
+        <table class="paginator" data-bind="pager: {items, countItemsOnPage, allItems} "></table>
     </div>
 
     <button id="showModalAddBook">Создание книги</button>
@@ -77,15 +71,13 @@
                        optionsText: function(item) {
                             return item.firstName + ' ' + item.lastName;},
                        optionsValue: 'id',
-                       value: bookVM.authorId">
-                    </select><br />
+                       value: bookVM.authorId"></select><br />
                     <label for="genresSelect">Жанр</label><br />
                     <select id="genresSelect" data-bind="
                        options: bookVM.allGenres,
                        optionsText: 'title',
                        optionsValue: 'id',
-                       value: bookVM.genreId">
-                    </select><br />
+                       value: bookVM.genreId"></select><br />
                     <label for="dateBookInput">Год создания</label><br />
                     <input id="dateBookInput" type="number" min="1800" max="2018" step="1" data-bind="value: bookVM.date" /><br />
 
@@ -114,15 +106,13 @@
                        optionsText: function(item) {
                             return item.firstName +' ' + item.lastName;},
                        optionsValue: 'id',
-                       value: bookVM.authorId">
-                    </select><br />
+                       value: bookVM.authorId"></select><br />
                     <label for="genresSelect">Жанр</label><br />
                     <select id="genresSelect" data-bind="
                        options: bookVM.allGenres,
                        optionsText: 'title',
                        optionsValue: 'id',
-                       value: bookVM.genreId">
-                    </select><br />
+                       value: bookVM.genreId"></select><br />
                     <label for="dateBookInput">Год создания</label><br />
                     <input id="dateBookInput" data-bind="value: bookVM.date" type="number" min="1800" max="2018" step="1" /><br />
 
@@ -133,5 +123,10 @@
             </div>
         </div>
     </div>
+    <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.8.1.min.js"></script>
+    <script type="text/javascript" src="../Scripts/knockout-3.4.2.js"></script>
+    <script type="text/javascript" src="../js/Classes.js"></script>
+    <script type="text/javascript" src="../js/PagesHelper_JS.js"></script>
+    <script type="text/javascript" src="../js/IndexBooksPage_JS.js"></script>
 </body>
 </html>

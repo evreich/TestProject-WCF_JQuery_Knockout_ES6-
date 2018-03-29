@@ -45,7 +45,7 @@ function SetEventOnClickDelLink(delLnk) {
 
 function FillTableAuthors(loadedAuthors) {
     for (var i = 0; i < loadedAuthors.length; i++) {
-        var author = new Author(loadedAuthors[i].Id, authorUrl, loadedAuthors[i].FirstName, loadedAuthors[i].LastName);
+        var author = new Author(loadedAuthors[i].Id, loadedAuthors[i].FirstName, loadedAuthors[i].LastName);
         authors.push({
             id: author.id,
             author: author

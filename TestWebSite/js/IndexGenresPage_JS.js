@@ -45,7 +45,7 @@ function SetEventOnClickDelLink(delLnk) {
 
 function FillTableGenres(loadedGenres) {
     for (var i = 0; i < loadedGenres.length; i++) {
-        var genre = new Genre(loadedGenres[i].Id, genreUrl, loadedGenres[i].Title);
+        var genre = new Genre(loadedGenres[i].Id, loadedGenres[i].Title);
         genres.push({
             id: genre.id,
             genre: genre

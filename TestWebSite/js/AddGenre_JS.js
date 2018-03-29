@@ -7,7 +7,7 @@ function SetEventOnAddBtn(addBtn) {
         var title = $("#titleInput").val();
 
         if (CheckFields([title])) {
-            var genre = new Genre(0, genreUrl, title);
+            var genre = new Genre(0, title);
             var prom = genre.add();
 
             prom.done(function () {

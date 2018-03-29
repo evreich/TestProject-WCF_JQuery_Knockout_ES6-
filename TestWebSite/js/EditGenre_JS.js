@@ -12,7 +12,7 @@ function FillGenreFields(idGenre) {
         type: "GET",
         dataType: "json",
         success: function (data) {
-            genre = new Genre(idGenre, genreUrl, data.Genre.Title);
+            genre = new Genre(idGenre, data.Genre.Title);
             genre.fillFields("#idGenreInput", "#titleInput");
         },
         error: function () {

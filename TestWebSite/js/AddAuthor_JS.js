@@ -8,7 +8,7 @@ function SetEventOnAddBtn(addBtn) {
         var lastName = $("#lastNameInput").val();
 
         if (CheckFields([firstName, lastName])) {
-            var author = new Author(0, authorUrl, firstName, lastName);
+            var author = new Author(0, firstName, lastName);
             var prom = author.add();
 
             prom.done(function () {
